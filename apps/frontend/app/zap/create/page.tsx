@@ -1,8 +1,11 @@
 "use client";
 
-import  Appbar  from "@/components/Appbar";
+import { BACKEND_URL } from "@/app/config";
+import { Appbar } from "@/components/Appbar";
+import { Input } from "@/components/Input";
 import { ZapCell } from "@/components/ZapCell";
-
+import { LinkButton } from "@/components/buttons/LinkButton";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,10 +15,10 @@ function useAvailableActionsAndTriggers() {
     const [availableTriggers, setAvailableTriggers] = useState([]);
 
     useEffect(() => {
-        axios.get(`$localhost:3000/api/v1/trigger/available`)
+        axios.get(`${BACKEND_URL}/api/v1/trigger/available`)
             .then(x => setAvailableTriggers(x.data.availableTriggers))
 
-        axios.get(`$localhost:3000/api/v1/action/available`)
+        axios.get(`${BACKEND_URL}/api/v1/action/available`)
             .then(x => setAvailableActions(x.data.availableActions))
     }, [])
 
@@ -44,12 +47,12 @@ export default function() {
     return <div>
         <Appbar />
         <div className="flex justify-end bg-slate-200 p-4">
-            <button onClick={async () => {
+            <PrimaryButton onClick={async () => {
                 if (!selectedTrigger?.id) {
                     return;
                 }
 
-                const response = await axios.post(`$localhost:3000/api/v1/zap`, {
+                const response = await axios.post(`${BACKEND_URL}/api/v1/zap`, {
                     "availableTriggerId": selectedTrigger.id,
                     "triggerMetadata": {},
                     "actions": selectedActions.map(a => ({
@@ -64,7 +67,7 @@ export default function() {
                 
                 router.push("/dashboard");
 
-            }}>Publish</button>
+            }}>Publish</PrimaryButton>
         </div>
         <div className="w-full min-h-screen bg-slate-200 flex flex-col justify-center">
             <div className="flex justify-center w-full">
@@ -79,7 +82,7 @@ export default function() {
             </div>
             <div className="flex justify-center">
                 <div>
-                    <button onClick={() => {
+                    <PrimaryButton onClick={() => {
                         setSelectedActions(a => [...a, {
                             index: a.length + 2,
                             availableActionId: "",
@@ -88,7 +91,7 @@ export default function() {
                         }])
                     }}><div className="text-2xl">
                         +
-                    </div></button>
+                    </div></PrimaryButton>
                 </div>
             </div>
         </div>
@@ -191,15 +194,15 @@ function EmailSelector({setMetadata}: {
     const [body, setBody] = useState("");
 
     return <div>
-        <input  type={"text"} placeholder="To" onChange={(e) => setEmail(e.target.value)}></input>
-        <input type={"text"} placeholder="Body" onChange={(e) => setBody(e.target.value)}></input>
+        <Input label={"To"} type={"text"} placeholder="To" onChange={(e) => setEmail(e.target.value)}></Input>
+        <Input label={"Body"} type={"text"} placeholder="Body" onChange={(e) => setBody(e.target.value)}></Input>
         <div className="pt-2">
-            <button onClick={() => {
+            <PrimaryButton onClick={() => {
                 setMetadata({
                     email,
                     body
                 })
-            }}>Submit</button>
+            }}>Submit</PrimaryButton>
         </div>
     </div>
 }
@@ -211,15 +214,15 @@ function SolanaSelector({setMetadata}: {
     const [address, setAddress] = useState("");    
 
     return <div>
-        <input  type={"text"} placeholder="To" onChange={(e) => setAddress(e.target.value)}></input>
-        <input type={"text"} placeholder="To" onChange={(e) => setAmount(e.target.value)}></input>
+        <Input label={"To"} type={"text"} placeholder="To" onChange={(e) => setAddress(e.target.value)}></Input>
+        <Input label={"Amount"} type={"text"} placeholder="To" onChange={(e) => setAmount(e.target.value)}></Input>
         <div className="pt-4">
-        <button onClick={() => {
+        <PrimaryButton onClick={() => {
             setMetadata({
                 amount,
                 address
             })
-        }}>Submit</button>
+        }}>Submit</PrimaryButton>
         </div>
     </div>
 }

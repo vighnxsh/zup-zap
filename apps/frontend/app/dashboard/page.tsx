@@ -1,7 +1,10 @@
 "use client"
-import  Appbar  from "@/components/Appbar";
+import { Appbar } from "@/components/Appbar";
+import { DarkButton } from "@/components/buttons/DarkButton";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { BACKEND_URL, HOOKS_URL } from "../config";
+import { LinkButton } from "@/components/buttons/LinkButton";
 import { useRouter } from "next/navigation";
 
 interface Zap {
@@ -36,7 +39,7 @@ function useZaps() {
     const [zaps, setZaps] = useState<Zap[]>([]);
 
     useEffect(() => {
-        axios.get(`$localhost:5000/api/v1/zap`, {
+        axios.get(`${BACKEND_URL}/api/v1/zap`, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             }
@@ -64,9 +67,9 @@ export default function() {
                     <div className="text-2xl font-bold">
                         My Zaps
                     </div>
-                    <button onClick={() => {
+                    <DarkButton onClick={() => {
                         router.push("/zap/create");
-                    }}>Create</button>
+                    }}>Create</DarkButton>
                 </div>
             </div>
         </div>
@@ -89,10 +92,10 @@ function ZapTable({ zaps }: {zaps: Zap[]}) {
             <div className="flex-1 flex"><img src={z.trigger.type.image} className="w-[30px] h-[30px]" /> {z.actions.map(x => <img src={x.type.image} className="w-[30px] h-[30px]" />)}</div>
             <div className="flex-1">{z.id}</div>
             <div className="flex-1">Nov 13, 2023</div>
-            <div className="flex-1">{`$localhost:4000/hooks/catch/1/${z.id}`}</div>
-            <div className="flex-1"><button onClick={() => {
+            <div className="flex-1">{`${HOOKS_URL}/hooks/catch/1/${z.id}`}</div>
+            <div className="flex-1"><LinkButton onClick={() => {
                     router.push("/zap/" + z.id)
-                }}>Go</button></div>
+                }}>Go</LinkButton></div>
         </div>)}
     </div>
 }
